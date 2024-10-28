@@ -15,3 +15,7 @@ def zone_apex():
 @app.get("/add/{a}/{b}")
 def add(a: int, b: int):
     return {"sum": a + b}
+
+@app.get("/square/{a}")
+def square(a: int):
+    return {"square": a * a}
