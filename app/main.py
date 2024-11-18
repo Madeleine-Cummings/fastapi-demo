@@ -44,12 +44,13 @@ def get_genres():
         json_data=[]
         for result in results:
             json_data.append(dict(zip(headers,result)))
+        #db.close()
         return(json_data)
     except Error as e:
         return {"Error": "MySQL Error: " + str(e)}
 @app.get('/songs')
 def get_songs():
-    query = "SELECT s.title, s.album, s.artist, s.year, g.genre AS genre FROM songs s JOIN genres g ON s.genre = g.genreid;" 
+    query = "SELECT s.title, s.album, s.artist, s.year, g.genre AS genre FROM songs s JOIN genres g WHERE s.genre = g.genreid;" 
     try:
         cur.execute(query)
         headers=[x[0] for x in cur.description]
@@ -57,6 +58,7 @@ def get_songs():
         json_data=[]
         for result in results:
             json_data.append(dict(zip(headers,result)))
+#        db.close()
         return(json_data)
     except Error as e:
         return {"Error": "MySQL Error: " + str(e)}
