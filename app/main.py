@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python3
 
 
@@ -22,7 +23,7 @@ app.add_middleware(
 
 DBHOST = "ds2022.cqee4iwdcaph.us-east-1.rds.amazonaws.com"
 DBUSER = "admin"
-DBPASS = "D$2022pAss" #os.getenv('DBPASS')
+DBPASS = os.getenv('DBPASS')
 DB = "uwg9at"
 
 db = mysql.connector.connect(user=DBUSER, host=DBHOST, password=DBPASS, database=DB)
@@ -31,6 +32,7 @@ cur=db.cursor()
 @app.get("/")  # zone apex
 def zone_apex():
     return {"Good day": "sunshine"}
+
 
 @app.get('/genres')
 def get_genres():
@@ -47,7 +49,7 @@ def get_genres():
         return {"Error": "MySQL Error: " + str(e)}
 @app.get('/songs')
 def get_songs():
-    query = "SELECT s.title, s.album, s.artist, s.year, g.genre AS genre FROM songs s JOIN genres g ON s.genre = g.genreid;"
+    query = "SELECT s.title, s.album, s.artist, s.year, g.genre AS genre FROM songs s JOIN genres g ON s.genre = g.genreid;" 
     try:
         cur.execute(query)
         headers=[x[0] for x in cur.description]
@@ -58,6 +60,24 @@ def get_songs():
         return(json_data)
     except Error as e:
         return {"Error": "MySQL Error: " + str(e)}
+
+# @app.get("/add/{a}/{b}")
+#def add(a: int, b: int):
+ #  return {"sum": a + b}
+
+
+#@app.get("/multiply/{c}/{d}")
+#def multiply(c: int, d:int):
+#    return {"product": c*d}
+# @app.get("/add/{a}/{b}")
+#def add(a: int, b: int):
+ #  return {"sum": a + b}
+
+
+#@app.get("/multiply/{c}/{d}")
+#def multiply(c: int, d:int):
+#    return {"product": c*d}
+
 
 # @app.get("/add/{a}/{b}")
 #def add(a: int, b: int):
