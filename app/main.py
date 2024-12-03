@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 
 
@@ -22,12 +21,12 @@ app.add_middleware(
 )
 
 DBHOST = "ds2022.cqee4iwdcaph.us-east-1.rds.amazonaws.com"
-DBUSER = "admin"
+DBUSER = "ds2022"
 DBPASS = os.getenv('DBPASS')
 DB = "uwg9at"
 
-db = mysql.connector.connect(user=DBUSER, host=DBHOST, password=DBPASS, database=DB)
-cur=db.cursor()
+#db = mysql.connector.connect(user=DBUSER, host=DBHOST, password=DBPASS, database=DB)
+#cur=db.cursor()
 
 @app.get("/")  # zone apex
 def zone_apex():
@@ -36,6 +35,8 @@ def zone_apex():
 
 @app.get('/genres')
 def get_genres():
+    db = mysql.connector.connect(user=DBUSER, host=DBHOST, password=DBPASS, database=DB)
+    cur=db.cursor()
     query = "SELECT * FROM genres ORDER BY genreid;"
     try:
         cur.execute(query)
@@ -44,12 +45,15 @@ def get_genres():
         json_data=[]
         for result in results:
             json_data.append(dict(zip(headers,result)))
-        #db.close()
+        cur.close()
+        db.close()
         return(json_data)
     except Error as e:
         return {"Error": "MySQL Error: " + str(e)}
 @app.get('/songs')
 def get_songs():
+    db = mysql.connector.connect(user=DBUSER, host=DBHOST, password=DBPASS, database=DB)
+    cur=db.cursor()
     query = "SELECT s.title, s.album, s.artist, s.year, s.file, g.genre AS genre FROM songs s JOIN genres g WHERE s.genre = g.genreid;" 
     try:
         cur.execute(query)
@@ -58,10 +62,12 @@ def get_songs():
         json_data=[]
         for result in results:
             json_data.append(dict(zip(headers,result)))
-#        db.close()
+        cur.close()
+        db.close()
         return(json_data)
     except Error as e:
         return {"Error": "MySQL Error: " + str(e)}
+
 
 # @app.get("/add/{a}/{b}")
 #def add(a: int, b: int):
